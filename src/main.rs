@@ -26,7 +26,7 @@ fn snake() {
     let mut x: i32 = 5; // starting position
     let mut y: i32 = 5;
 
-    let t = time::Duration::from_millis(400); // snake moving cooldown
+    let t = time::Duration::from_millis(50); // snake moving cooldown
     
     let mut dir: i32 = KEY_RIGHT;                   // direction vars
     let mut dir_try: i32; let mut dir_old: i32;
