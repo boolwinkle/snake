@@ -108,7 +108,7 @@ fn snake() {
             let food: Pair = Pair{x: food_coords / max_col, y: food_coords % max_col};
             mvprintw(food.x, food.y, "$");
             field[(food.x * max_col + food.y) as usize] = 2;
-            dur = dur * 49 / 50; 
+            dur = dur * 19 / 20; 
             t = time::Duration::from_millis(dur);
         }
         else {
