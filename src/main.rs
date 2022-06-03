@@ -1,10 +1,12 @@
 extern crate ncurses;
 extern crate queues;
+extern crate rand;
 
 use ncurses::*;
 use queues::*;
 use std::{thread, time};
 use std::vec::*;
+use rand::*;
 
 #[derive(Clone)]
 #[derive(Copy)]
@@ -25,13 +27,14 @@ fn snake() {
 
     let mut x: i32 = 5; // starting position
     let mut y: i32 = 5;
-
-    let t = time::Duration::from_millis(50); // snake moving cooldown
+    
+    let mut dur: u64 = 150;
+    let mut t = time::Duration::from_millis(dur); // snake moving cooldown
     
     let mut dir: i32 = KEY_RIGHT;                   // direction vars
     let mut dir_try: i32; let mut dir_old: i32;
     
-    let init_len: i32 = 30;
+    let init_len: i32 = 3;
 
     let mut max_row: i32 = 0; let mut max_col: i32 = 0;     // screen width and height 
     getmaxyx(stdscr(), &mut max_row, &mut max_col);
@@ -48,6 +51,16 @@ fn snake() {
 
         field[(x * max_col + y) as usize] = 1;
     }
+
+    // generate food
+    let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
+    while field[food_coords as usize] == 1 {
+        let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
+    }
+
+    let food: Pair = Pair{x: food_coords / max_col, y: food_coords % max_col};
+    mvprintw(food.x, food.y, "$");
+    field[(food.x * max_col + food.y) as usize] = 2;
 
     loop {
         dir_try = getch();
@@ -77,24 +90,41 @@ fn snake() {
             snake = "^";
         }
         
-        let tail: Pair = snake_q.remove().unwrap();
         let head: Pair = Pair{x: x, y: y};
-        snake_q.add(head);
 
         if !(0 <= x && x < max_row) || !(0 <= y && y < max_col) // if out of bounds
-        || field[(head.x * max_col + head.y) as usize] == 1 { // colision detection
+        || field[(head.x * max_col + head.y) as usize] == 1 {   // colision detection
             break;
         }
 
-        mvprintw(tail.x % max_row, tail.y % max_col, " ");
-        mvprintw(head.x % max_row, head.y % max_col, &snake);
+        snake_q.add(head);
 
-        field[(tail.x * max_col + tail.y) as usize] = 0;
+        if field[(head.x * max_col + head.y) as usize] == 2 {
+            // gen new food
+            let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
+            while field[food_coords as usize] == 1 {
+                let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
+            }
+            let food: Pair = Pair{x: food_coords / max_col, y: food_coords % max_col};
+            mvprintw(food.x, food.y, "$");
+            field[(food.x * max_col + food.y) as usize] = 2;
+            dur = dur * 49 / 50; 
+            t = time::Duration::from_millis(dur);
+        }
+        else {
+            let tail: Pair = snake_q.remove().unwrap();
+            mvprintw(tail.x % max_row, tail.y % max_col, " ");
+            field[(tail.x * max_col + tail.y) as usize] = 0;
+        }
+
+        mvprintw(head.x % max_row, head.y % max_col, &snake);
         field[(head.x * max_col + head.y) as usize] = 1;
 
         refresh();
         thread::sleep(t);
     }
+
+    endwin();
 }
 
 fn main() {

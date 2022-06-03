@@ -5,3 +5,4 @@ version = "0.0.1"
 [dependencies]
 ncurses = "5.101.0"
 queues = "1.0.2"
+rand = "0.8.5"
