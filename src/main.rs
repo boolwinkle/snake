@@ -124,6 +124,8 @@ fn snake() {
         thread::sleep(t);
     }
 
+    nodelay(stdscr(), false);
+    getch();
     endwin();
 }
 
