@@ -60,11 +60,11 @@ fn snake() {
 
     // generate food
     let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
-    let mut food: Pair = Pair{x: food_coords / max_col, y: food_coords % max_col};
-    while field[food_coords as usize] == 1 ||
-        ((1 <= food.x && food.x < max_row - 1) && (1 <= food.y && food.y < max_col - 1)) {
+    let mut food: Pair = Pair{x: food_coords / max_row, y: food_coords % max_row};
+    while field[food_coords as usize] != 0 ||
+        (!(1 <= food.x && food.x < max_row - 1) || !(1 <= food.y && food.y < max_col - 1))  {
                 let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
-                food = Pair{x: food_coords / max_col, y: food_coords % max_col};
+                food = Pair{x: food_coords / max_row, y: food_coords % max_row};
             }
 
     let food: Pair = Pair{x: food_coords / max_col, y: food_coords % max_col};
@@ -110,18 +110,18 @@ fn snake() {
         else if field[(head.x * max_col + head.y) as usize] == 2 {
             // gen new food
             let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
-            let mut food: Pair = Pair{x: food_coords / max_col, y: food_coords % max_col};
-            while field[food_coords as usize] == 1 ||
-            (!(1 <= food.x && food.x < max_row - 1) || !(1 <= food.y && food.y < max_col - 1)) {
-                let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
-                food = Pair{x: food_coords / max_col, y: food_coords % max_col};
-            }
+            let mut food: Pair = Pair{x: food_coords / max_row, y: food_coords % max_row};
+            while field[food_coords as usize] != 0 ||
+                (!(1 <= food.x && food.x < max_row - 1) || !(1 <= food.y && food.y < max_col - 1)) {
+                    let food_coords: i32 = (rand::random::<u32>() % (max_row * max_col) as u32) as i32;
+                    food = Pair{x: food_coords / max_row, y: food_coords % max_row};
+                }
             mvprintw(food.x, food.y, "$");
             field[(food.x * max_col + food.y) as usize] = 2;
             dur = dur * 49 / 50;
             t = time::Duration::from_millis(dur);
         }
-        
+
         else {
             let tail: Pair = snake_q.remove().unwrap();
             mvprintw(tail.x % max_row, tail.y % max_col, " ");
