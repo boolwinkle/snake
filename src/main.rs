@@ -21,8 +21,8 @@ struct WinSpecs {
     start_y: i32
 }
 
-static GAME_WINDOW_HEIGHT: i32 = 24;
-static GAME_WINDOW_WIDTH: i32 = 56;
+static GAME_WINDOW_HEIGHT: i32 = 12;
+static GAME_WINDOW_WIDTH: i32 = 28;
 
 fn create_win(specs: WinSpecs, border: bool) -> WINDOW {
   let win = newwin(specs.height, specs.width, specs.start_y, specs.start_x);
@@ -31,16 +31,18 @@ fn create_win(specs: WinSpecs, border: bool) -> WINDOW {
   win
 }
 
-fn generate_food(free_pos: &mut HashSet<Pair>, win: WINDOW) -> Pair {
+fn generate_food(free_pos: &mut HashSet<Pair>, c: &mut i32, win: WINDOW) -> Pair {
 
     //let mut rng = rand::thread_rng();
     //let food_index = rng.gen::<i32>() % (GAME_WINDOW_HEIGHT * GAME_WINDOW_WIDTH);
     let mut food: Pair = Pair{x: 1, y: 1};
 
+    let mut n = 0;
     for pos in free_pos.iter() {
-        food = *pos; break;
-    }
-
+        if n == *c {
+            food = *pos;
+        } n += 1;
+    } *c += 1;
     mvwprintw(win, food.x, food.y, "$");
 
     food
@@ -64,7 +66,7 @@ fn fill_free_pos(set: &mut HashSet<Pair>) {
     }
 }
 
-fn move_snake(win: WINDOW, q: &mut Queue<Pair>, head: &mut Pair, str: &str,
+fn move_snake(win: WINDOW, q: &mut Queue<Pair>, head: &mut Pair, str: &str, food_counter: &mut i32,
     free_pos: &mut HashSet<Pair>, food: &mut Pair, len: &mut i32, t: &mut std::time::Duration) {
 
         head.x = (head.x + GAME_WINDOW_HEIGHT) % GAME_WINDOW_HEIGHT;
@@ -81,7 +83,7 @@ fn move_snake(win: WINDOW, q: &mut Queue<Pair>, head: &mut Pair, str: &str,
             mvwprintw(win, tail.x, tail.y, " ");
         }
         else {
-            *food = generate_food(free_pos, win);
+            *food = generate_food(free_pos, food_counter, win);
             *len += 1;
             *t = *t * 99 / 100;
             mvwprintw(stdscr(), 0, 0, &format!("length: {}", len));
@@ -154,7 +156,8 @@ fn snake() {
     mvwprintw(stdscr(), 0, 0, &format!("length: {}", init_len));
 
     //generate food
-    let mut food: Pair = generate_food(&mut free_pos, game_window);
+    let mut food_counter = 0;
+    let mut food: Pair = generate_food(&mut free_pos, &mut food_counter, game_window);
 
     loop {
         dir = getch();
@@ -178,7 +181,7 @@ fn snake() {
         let mut snake_head: Pair = Pair{x: snake_x, y: snake_y};
 
         move_snake(game_window, &mut snake_q, &mut snake_head,
-            snake_str, &mut free_pos, &mut food, &mut init_len, &mut cooldown);
+            snake_str, &mut food_counter, &mut free_pos, &mut food, &mut init_len, &mut cooldown);
 
         dir_old = dir;
         thread::sleep(cooldown);
