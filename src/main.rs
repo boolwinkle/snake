@@ -31,8 +31,12 @@ fn create_win(specs: WinSpecs, border: bool) -> WINDOW {
   win
 }
 
-fn move_snake(win: WINDOW, q: &mut Queue<Pair>, x: i32, y: i32, str: &str) {
-    let head = Pair {x: x, y: y};
+fn move_snake(win: WINDOW, q: &mut Queue<Pair>, x: &mut i32, y: &mut i32, str: &str) {
+
+    *x = (*x + GAME_WINDOW_HEIGHT) % GAME_WINDOW_HEIGHT;
+    *y = (*y + GAME_WINDOW_WIDTH) % GAME_WINDOW_WIDTH;
+
+    let head = Pair {x: *x, y: *y};
     mvwprintw(win, head.x, head.y, str);
     q.add(head).unwrap();
 
@@ -108,7 +112,7 @@ fn snake() {
             _ => {}
         }
 
-        move_snake(game_window, &mut snake_q, snake_x, snake_y, snake_str);
+        move_snake(game_window, &mut snake_q, &mut snake_x, &mut snake_y, snake_str);
 
         dir_old = dir;
         thread::sleep(cooldown);
