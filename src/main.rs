@@ -42,7 +42,7 @@ fn generate_food(free_pos: &mut HashSet<Pair>, c: &mut i32, win: WINDOW) -> Pair
         if n == *c {
             food = *pos;
         } n += 1;
-    } *c += 1;
+    } *c = (*c + 1) % (GAME_WINDOW_HEIGHT * GAME_WINDOW_WIDTH) ;
     mvwprintw(win, food.x, food.y, "$");
 
     food
