@@ -1,6 +1,6 @@
 extern crate ncurses;
 extern crate queues;
-extern crate rand;
+//extern crate rand;
 
 use ncurses::*;
 use queues::*;

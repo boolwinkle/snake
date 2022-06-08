@@ -1,8 +1,8 @@
 [package]
 name = "snakex_vatr_os"
 version = "0.0.1"
+author = "boolwinkle"
 
 [dependencies]
 ncurses = "5.101.0"
 queues = "1.0.2"
-rand = "0.8.5"
