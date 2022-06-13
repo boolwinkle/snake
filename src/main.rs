@@ -139,7 +139,7 @@ fn snake() {
     let _border_window: WINDOW = create_win(border_specs, true);
 
     //initialize snake
-    let mut cooldown = time::Duration::from_millis(150);            
+    let mut cooldown = time::Duration::from_millis(200);            
     let mut dir: i32 = KEY_RIGHT;
     let mut dir_old: i32 = dir;
     let mut init_len = 2;
@@ -187,7 +187,8 @@ fn snake() {
         thread::sleep(cooldown);
     }
 
-    nodelay(stdscr(), true);
+    thread::sleep(time::Duration::from_millis(500));
+    nodelay(stdscr(), false);
     getch();
     endwin();
 }
