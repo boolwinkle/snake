@@ -1,1 +1,1 @@
-/home/boolwinkle/Programming/snakex_vatr_os/target/debug/snakex_vatr_os: /home/boolwinkle/Programming/snakex_vatr_os/src/main.rs
+/home/boolwinkle/prog/snakeEX_vatrOS/target/debug/snakex_vatr_os: /home/boolwinkle/prog/snakeEX_vatrOS/src/main.rs

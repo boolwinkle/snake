@@ -3,6 +3,7 @@ Personal little project to learn Rust with.
 
 To run, clone repository and run "cargo run".
 
-I encourage stealing my code. Ha ha
+If you do not have ncurses.h, it can be downloaded
+installing the packages: libncurses5-dev, libncursesw5-dev.
 
-** WORK IN PROGRESS **
+(Examle: sudo apt install libncurses5-dev libncursesw5-dev)
